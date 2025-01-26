@@ -12,10 +12,11 @@ INCLUDE Irvine32.inc
 .data
     introMsg BYTE "Simple Arithmetic     by [Your Name]", 0
     instrMsg BYTE "Enter two numbers X > Y, and I'll work some math magic!", 0
-    excMsg1   BYTE "**EC: Program verifies the numbers are in descending order.", 0
-    excMsg2   BYTE "**EC: Program allows repeated calculations until user quits.", 0
-    excMsg3   BYTE "**EC: Program computes Y - X when X - Y is negative.", 0
-    excMsg4   BYTE "**EC: Program calculates quotient and remainder.", 0
+
+    ecMsg1   BYTE "**EC: Program verifies the numbers are in descending order.", 0
+    ecMsg2   BYTE "**EC: Program allows repeated calculations until user quits.", 0
+    ecMsg3   BYTE "**EC: Program computes Y - X when X - Y is negative.", 0
+    ecMsg4   BYTE "**EC: Program calculates quotient and remainder.", 0
 
     promptX  BYTE "First number X = ", 0
     promptY  BYTE "Second number Y = ", 0
@@ -51,20 +52,6 @@ main PROC
     CALL WriteString
     CALL CrLf
 
-    ; Display Extra Credit Features
-    MOV  EDX, OFFSET excMsg1
-    CALL WriteString
-    CALL CrLf
-    MOV  EDX, OFFSET excMsg2
-    CALL WriteString
-    CALL CrLf
-    MOV  EDX, OFFSET excMsg3
-    CALL WriteString
-    CALL CrLf
-    MOV  EDX, OFFSET excMsg4
-    CALL WriteString
-    CALL CrLf
-
 repeat_program:
     ; Prompt for X
     MOV  EDX, OFFSET promptX
@@ -81,6 +68,9 @@ repeat_program:
     ; Ensure X > Y
     CMP  X, Y
     JG   continue_input
+    MOV  EDX, OFFSET ecMsg1  ; **EC: Descending Order Check**
+    CALL WriteString
+    CALL CrLf
     MOV  EDX, OFFSET errorMsg
     CALL WriteString
     CALL CrLf
@@ -100,16 +90,27 @@ continue_input:
     SUB  EAX, X
     MOV  revDiffVal, EAX
 
+    ; **EC: Handle negative results**
+    CMP  diffVal, 0
+    JGE  skip_negative
+    MOV  EDX, OFFSET ecMsg3
+    CALL WriteString
+    CALL CrLf
+skip_negative:
+
     MOV  EAX, X
     IMUL Y
     MOV  prodVal, EAX
 
-    ; Compute quotient and remainder
+    ; **EC: Compute quotient and remainder**
+    MOV  EDX, OFFSET ecMsg4
+    CALL WriteString
+    CALL CrLf
     MOV  EAX, X
-    CDQ                     ; Sign-extend EAX into EDX for signed division
-    IDIV Y                  ; Divide X by Y
-    MOV  quotient, EAX      ; Store quotient
-    MOV  remainder, EDX     ; Store remainder
+    CDQ
+    IDIV Y
+    MOV  quotient, EAX
+    MOV  remainder, EDX
 
     ; Display results
     CALL CrLf
@@ -138,6 +139,8 @@ continue_input:
     CALL CrLf
 
     ; Handle negative difference and compute Y - X
+    CMP  diffVal, 0
+    JGE  skip_y_minus_x
     MOV  EAX, Y
     CALL WriteInt
     MOV  EDX, OFFSET result3
@@ -149,6 +152,7 @@ continue_input:
     MOV  EAX, revDiffVal
     CALL WriteInt
     CALL CrLf
+skip_y_minus_x:
 
     MOV  EAX, X
     CALL WriteInt
@@ -178,7 +182,10 @@ continue_input:
     CALL WriteInt
     CALL CrLf
 
-    ; Ask user if they want to quit
+    ; **EC: Repeat until user quits**
+    CALL CrLf
+    MOV  EDX, OFFSET ecMsg2  ; Display only when about to ask user
+    CALL WriteString
     CALL CrLf
     MOV  EDX, OFFSET quitMsg
     CALL WriteString
