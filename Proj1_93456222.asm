@@ -1,16 +1,19 @@
-TITLE Simple Arithmetic - CS271 Project 1
+TITLE Simple Arithmetic - CS271 Project 1     (martireh.asm)
 
 ; Author: Rehjii L Martin
-; Date: 01/26/2025
-; Description:
-; This program prompts the user to enter two integers (X > Y),
+; Last Modified: 01/26/2025
+; OSU email address: martireh@oregonstate.edu
+; Course number/section:   CS271 Section 400
+; Project Number: 1                 Due Date: 1/26/2025
+; Description: This program prompts the user to enter two integers (X > Y),
 ; calculates the sum, difference (both X-Y and Y-X if needed), product,
 ; and quotient/remainder. It repeats until the user chooses to quit.
+
 
 INCLUDE Irvine32.inc
 
 .data
-    introMsg BYTE "Simple Arithmetic     by [Your Name]", 0
+    introMsg BYTE "Simple Arithmetic     by Rehjii L Martin", 0
     instrMsg BYTE "Enter two numbers X > Y, and I'll work some math magic!", 0
 
     ecMsg1   BYTE "**EC: Program verifies the numbers are in descending order.", 0
@@ -96,8 +99,8 @@ continue_input:
     MOV  EDX, OFFSET ecMsg3
     CALL WriteString
     CALL CrLf
-skip_negative:
 
+skip_negative:
     MOV  EAX, X
     IMUL Y
     MOV  prodVal, EAX
@@ -152,8 +155,8 @@ skip_negative:
     MOV  EAX, revDiffVal
     CALL WriteInt
     CALL CrLf
-skip_y_minus_x:
 
+skip_y_minus_x:
     MOV  EAX, X
     CALL WriteInt
     MOV  EDX, OFFSET result4
